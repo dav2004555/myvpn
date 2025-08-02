@@ -13,6 +13,9 @@ app.use(cors());
 app.use(express.json());
 app.use("/", authRoutes);
 
+
+console.log("Connecting to MongoDB with URI:", process.env.MONGO_URI);
+
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("✅ MongoDB Connected"))
   .catch((err) => console.error(err));
