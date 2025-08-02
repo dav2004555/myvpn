@@ -1,21 +1,18 @@
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import authRoutes from "./routes/auth.js";
 
+dotenv.config();
 const app = express();
+
 app.use(cors());
+app.use(express.json());
+app.use("/", authRoutes);
 
-const users = {
-  "user1": "vless://UUID1@IP:443?security=reality&sni=example.com#User1",
-  "user2": "vless://UUID2@IP:443?security=reality&sni=example.com#User2"
-};
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("✅ MongoDB Connected"))
+  .catch((err) => console.error(err));
 
-app.get("/config", (req, res) => {
-  const user = req.query.user;
-  if (!user || !users[user]) {
-    return res.status(404).json({ error: "User not found" });
-  }
-  res.json({ config: users[user] });
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(process.env.PORT, () => console.log(`🚀 Server running on port ${process.env.PORT}`));
