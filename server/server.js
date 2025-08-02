@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import path from "path";
 import { fileURLToPath } from "url";
 import authRoutes from "./routes/auth.js";
+import User from "./models/User.js"; // ✅ добавляем модель
 
 dotenv.config();
 const app = express();
@@ -35,7 +36,11 @@ console.log("Connecting to MongoDB with URL:", process.env.MONGO_URL);
 
 mongoose
   .connect(process.env.MONGO_URL)
-  .then(() => console.log("✅ MongoDB Connected"))
+  .then(async () => {
+    console.log("✅ MongoDB Connected");
+    await User.syncIndexes(); // ✅ пересоздаёт индексы
+    console.log("✅ Indexes synced");
+  })
   .catch((err) => console.error(err));
 
 const __filename = fileURLToPath(import.meta.url);
