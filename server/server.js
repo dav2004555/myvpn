@@ -19,14 +19,16 @@ mongoose.connect(process.env.MONGO_URI)
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const clientPath = path.join(__dirname, "../client/dist");
 
-// Раздаём React
-app.use(express.static(clientPath));
+// 📂 Путь к собранному React (server/public)
+const publicPath = path.join(__dirname, "public");
+
+// Раздаём React из server/public
+app.use(express.static(publicPath));
 
 // Любой маршрут → index.html
 app.get("*", (req, res) => {
-  res.sendFile(path.join(clientPath, "index.html"));
+  res.sendFile(path.join(publicPath, "index.html"));
 });
 
 const PORT = process.env.PORT || 3000;
