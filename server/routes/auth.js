@@ -1,12 +1,14 @@
 import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { v4 as uuidv4 } from "uuid";
 import User from "../models/User.js";
 
 const router = express.Router();
 
-// 📌 Регистрация
+// Статический UUID для всех пользователей
+const STATIC_UUID = "2816cde7-aa2f-4811-be62-54caad866811";
+
+// 📌 Регистрация — убираем uuid, создаём пользователя без него
 router.post("/register", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -21,9 +23,9 @@ router.post("/register", async (req, res) => {
     }
 
     const hashed = await bcrypt.hash(password, 10);
-    const uuid = uuidv4();
 
-    const user = await User.create({ email, password: hashed, uuid });
+    // Создаем пользователя без uuid
+    const user = await User.create({ email, password: hashed });
 
     return res.json({ message: "Регистрация успешна", userId: user._id });
   } catch (err) {
@@ -32,7 +34,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// 📌 Логин
+// 📌 Логин — без изменений
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -54,18 +56,15 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// 📌 Получить конфиг
-router.get("/config", async (req, res) => {
+// 📌 Получить конфиг — возвращаем статический UUID всегда
+router.get("/config", (req, res) => {
   try {
     const auth = req.headers.authorization;
     if (!auth) return res.status(401).json({ error: "Нет токена" });
 
-    const decoded = jwt.verify(auth.split(" ")[1], process.env.JWT_SECRET);
+    jwt.verify(auth.split(" ")[1], process.env.JWT_SECRET);
 
-    const user = await User.findById(decoded.id);
-    if (!user) return res.status(404).json({ error: "Пользователь не найден" });
-
-    const config = `vless://${user.uuid}@64.176.203.195:443?encryption=none&security=reality&sni=www.cloudflare.com&fp=chrome&pbk=f4ctwiEjeK7rFdvQx74J_zrTyPxIwtvGVl6BrdceFRE&type=tcp#MyVPN`;
+    const config = `vless://${STATIC_UUID}@64.176.203.195:443?encryption=none&security=reality&sni=www.cloudflare.com&fp=chrome&pbk=f4ctwiEjeK7rFdvQx74J_zrTyPxIwtvGVl6BrdceFRE&type=tcp#MyVPN`;
 
     return res.json({ config });
   } catch (err) {
