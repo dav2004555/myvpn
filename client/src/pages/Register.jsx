@@ -7,7 +7,7 @@ export default function Register() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const API_URL = "https://myvpn-production.up.railway.app"; // ✅ Railway backend
+  const API_URL = "https://myvpn-production-645a.up.railway.app"; // ✅ Railway backend
 
   const handleRegister = async (e) => {
     e.preventDefault();

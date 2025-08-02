@@ -12,7 +12,7 @@ const app = express();
 const allowedOrigins = [
   "https://myvpn-production-645a.up.railway.app",
   "https://myvpn-production.up.railway.app",
-  "http://localhost:5173"
+  "http://localhost:5173",
 ];
 
 app.use(
@@ -31,10 +31,10 @@ app.use(
 app.use(express.json());
 app.use("/", authRoutes);
 
-console.log("Connecting to MongoDB with URI:", process.env.MONGO_URI);
+console.log("Connecting to MongoDB with URL:", process.env.MONGO_URL);
 
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(process.env.MONGO_URL)
   .then(() => console.log("✅ MongoDB Connected"))
   .catch((err) => console.error(err));
 
