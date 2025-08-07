@@ -5,7 +5,12 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      borderRadius: {
+        xl: 'var(--radius)',
+        '2xl': 'calc(var(--radius) + 4px)'
+      }
+    },
   },
   plugins: [],
 }
